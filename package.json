@@ -1,0 +1,32 @@
+{
+  "name": "payment",
+  "version": "1.0.0",
+  "description": "Peer2Peer financial service",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server/app.js",
+    "start": "node server/app.js"
+  },
+  "keywords": [
+    "P2P",
+    "agent",
+    "transaction"
+  ],
+  "author": "Valentine Eze",
+  "license": "MIT",
+  "dependencies": {
+    "africastalking": "^0.4.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.6.7",
+    "nodemailer": "^6.3.0",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "randomatic": "^3.1.1",
+    "@hapi/joi": "^15.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
