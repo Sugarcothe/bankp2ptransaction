@@ -15,7 +15,7 @@
   "author": "Valentine Eze",
   "license": "MIT",
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
+    "@hapi/joi": "^15.0.3",
     "africastalking": "^0.5.7",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.3",

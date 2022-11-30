@@ -3,7 +3,7 @@ const Joi = require("@hapi/joi");
 const validateRegister = data => {
   const schema = {
     name: Joi.string()
-      .min(6)
+      .min(3)
       .required(),
     email: Joi.string()
       .email()
@@ -16,7 +16,7 @@ const validateRegister = data => {
       .max(11)
       .required(),
     walletId: Joi.string()
-      .min(12)
+      .min(5)
       .max(12)
       .required(),
     pin: Joi.string()
@@ -35,7 +35,7 @@ const validateRegister = data => {
 const validateLogin = data => {
   const schema = {
     walletId: Joi.string()
-      .min(12)
+      .min(5)
       .max(12)
       .required(),
     password: Joi.string()

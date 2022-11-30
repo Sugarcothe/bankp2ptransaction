@@ -2,6 +2,12 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
 
+// module.exports = {
+//   fundwallet: async (req, res, next) => {
+//     const = req
+//   }
+// }
+
 module.exports = {
   transferFund: async (req, res, next) => {
     const senderId = req.body.sender_walletId;

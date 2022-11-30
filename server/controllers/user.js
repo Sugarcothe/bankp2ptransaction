@@ -7,26 +7,32 @@ const config = require("../config/index");
 
 module.exports = {
   register: async (req, res, next) => {
-    const { name, email, phoneNumber, password } = req.body;
-    const walletId = randomize("0A", 12);
-    const pin = randomize("A0", 4);
-
-    //append walletId and pin to req.body
-    req.body.walletId = walletId;
-    req.body.pin = pin;
+    const { name, email, phoneNumber, password, pin, walletId } = req.body;
 
     //validate user request
     const { error } = validateRegister(req.body);
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
+    // If number already exist
+    const phoneExist = await User.findOne({ phoneNumber });
+    if (phoneExist)
+      return res.status(400).json({
+        message: `${phoneExist.phoneNumber} already registered, Please login`,
+      });
+
+    const emailExist = await User.findOne({ email });
+    if (emailExist)
+      return res.status(400).json({
+        message: `${emailExist.email} already registered, Please login`,
+      });
 
     //     //check if the user already exist
     const userExist = await User.findOne({ walletId });
     if (userExist)
       return res
         .status(400)
-        .json({ message: "User already register, please login" });
+        .json({ message: "Wallet Id already registered, Please login" });
 
     //salt and hash pin and password
     const salt = await bcrypt.genSalt(10);
@@ -41,17 +47,16 @@ module.exports = {
         email,
         phoneNumber,
         pin: hashedPin,
-        password: hashedPassword
+        password: hashedPassword,
       });
 
       // try {
       //send mail to the user containing walletId and pin for login
       const userDetails = { name, walletId, pin, email };
-      mailService.accountCreationMail(userDetails);
 
       res.status(201).json({
-        message: "new user created",
-        user: { id: newUser._id, name: newUser.name }
+        message: "Your Accounted is created",
+        userDetails,
       });
     } catch (err) {
       return res
@@ -59,6 +64,8 @@ module.exports = {
         .json({ message: `Error while creating account: ${err}` });
     }
   },
+
+  // login
 
   login: async (req, res, next) => {
     const { walletId, password } = req.body;
@@ -71,13 +78,11 @@ module.exports = {
 
     //check if user exist
     const user = await User.findOne({ walletId });
-    if (!user)
-      return res.status(400).json({ message: "Invalid walletId or password" });
+    if (!user) return res.status(400).json({ message: "Invalid walletId" });
 
     //compare the password with that in the db
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid walletId or password" });
+    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
     //sign a JWT token
 
@@ -92,7 +97,7 @@ module.exports = {
       .status(200)
       .json({
         message: "Successfully logged in",
-        user: { id: user._id, name: user.name }
+        user: { id: user._id, name: user.name },
       });
-  }
+  },
 };
