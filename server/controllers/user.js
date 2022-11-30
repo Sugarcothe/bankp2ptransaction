@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const randomize = require("randomatic");
 const { validateRegister, validateLogin } = require("../middleware/validator");
-const mailService = require("../services/emailService");
 const config = require("../config/index");
 
 module.exports = {

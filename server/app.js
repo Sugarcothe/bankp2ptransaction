@@ -3,16 +3,12 @@ const mongoose = require("mongoose");
 const config = require("./config/index");
 const app = express();
 
-mongoose.connect(
-  config.MONGOURI,
-  { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false },
-  err => {
-    if (err) console.log("cannot connect to db");
-    else {
-      console.log("db connetion successfully established");
-    }
+mongoose.connect(config.MONGOURI, (err) => {
+  if (err) console.log("cannot connect to db");
+  else {
+    console.log("db connetion successfully established");
   }
-);
+});
 
 app.use(express.json());
 app.get("/", (req, res, next) => {

@@ -1,14 +1,12 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
-const { sendOtp } = require("../utils/otp");
 
 module.exports = {
   transferFund: async (req, res, next) => {
     const senderId = req.body.sender_walletId;
     const receiverId = req.body.receiver_walletId;
     let amount = req.body.amount;
-    const pin = req.body.pin;
 
     if (senderId === receiverId)
       return res
@@ -22,17 +20,9 @@ module.exports = {
     if (!sender || !receiver)
       return res.status(400).json({ message: "Invalid sender or receiver Id" });
 
-    //validate pin
-    const isMatch = await bcrypt.compare(pin, sender.pin);
-
     //ensure sender has enough balance to make this transaction
     let senderBalance = sender.balance;
-    if (isMatch && senderBalance >= amount) {
-      //send otp
-      sendOtp({
-        walletId: senderId,
-        phoneNumber: sender.phoneNumber
-      });
+    if (senderBalance >= amount) {
       //save the unfulfilled transaction to transaction table
       const transactionDetails = await Transaction.create({
         sender_walletId: senderId,
@@ -42,7 +32,6 @@ module.exports = {
 
       res.status(200).json({
         message:
-          "Please enter the otp sent to your mobile number to complete this transaction",
         transactionDetails
       });
     } else {
