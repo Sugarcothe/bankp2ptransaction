@@ -28,11 +28,14 @@ module.exports = {
       });
 
     //     //check if the user already exist
-    const userExist = await User.findOne({ walletId });
-    if (userExist)
+    const walletIdExist = await User.findOne({ walletId });
+    if (walletId)
       return res
         .status(400)
-        .json({ message: "Wallet Id already registered, Please login" });
+        .json({
+          message:
+            `${walletIdExist.walletId} as Wallet Id already registered, select another walletId`,
+        });
 
     //salt and hash pin and password
     const salt = await bcrypt.genSalt(10);

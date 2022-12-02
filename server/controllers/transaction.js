@@ -2,12 +2,6 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const Transaction = require("../models/transaction");
 
-// module.exports = {
-//   fundwallet: async (req, res, next) => {
-//     const 
-//   }
-// }
-
 module.exports = {
   transferFund: async (req, res, next) => {
     const senderId = req.body.sender_walletId;
@@ -33,16 +27,15 @@ module.exports = {
       const transactionDetails = await Transaction.create({
         sender_walletId: senderId,
         receiver_walletId: receiverId,
-        amount
+        amount,
       });
 
       res.status(200).json({
-        message:
-        transactionDetails
+        message: transactionDetails,
       });
     } else {
       res.status(400).json({
-        message: "You don't have enough funds to complete this transaction"
+        message: "You don't have enough funds to complete this transaction",
       });
     }
   },
@@ -52,15 +45,15 @@ module.exports = {
 
     // get amount transacted
     const transaction = await Transaction.findById(transId);
-    
+
     const sender = await User.findOne({
-      accountNumber: transaction.sender_acctNumber
+      accountNumber: transaction.sender_acctNumber,
     });
     const receiver = await User.findOne({
       accountNumber: transaction.receiver_acctNumber,
     });
 
-  //  get sender and receiver balance
+    //  get sender and receiver balance
     let senderBalance = sender.balance;
     let receiverBalance = receiver.balance;
 
@@ -71,7 +64,7 @@ module.exports = {
 
       await User.findOneAndUpdate(
         { accountNumber: transaction.sender_acctNumber },
-        { balance: senderBalance}
+        { balance: senderBalance }
       );
       await User.findOneAndUpdate(
         { accountNumber: transaction.receiver_acctNumber },
@@ -83,12 +76,23 @@ module.exports = {
       );
 
       res.status(200).json({
-        message: "Fund transfer completed successfully!"
+        message: "Fund transfer completed successfully!",
       });
     } else {
       res.status(400).json({
-        message: "You don't have enough funds to complete this transaction"
+        message: "You don't have enough funds to complete this transaction",
       });
+    }
+  },
+
+  fundWallet: async (req, res, next) => {
+    try {
+      await Users.findByIdAndUpdate(req.params.id, {
+        $inc: req.body,
+      });
+      res.status(200).json(`🟢 Account funded Succesfully`);
+    } catch (err) {
+      return res.status(500).json(err);
     }
   },
 
@@ -99,5 +103,5 @@ module.exports = {
     const data = [...sent, ...recieved];
 
     res.status(200).json({ message: "Transaction history", data });
-  }
+  },
 };
