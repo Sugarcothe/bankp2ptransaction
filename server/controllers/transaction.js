@@ -85,17 +85,6 @@ module.exports = {
     }
   },
 
-  fundWallet: async (req, res, next) => {
-    try {
-      await Users.findByIdAndUpdate(req.params.id, {
-        $inc: req.body,
-      });
-      res.status(200).json(`🟢 Account funded Succesfully`);
-    } catch (err) {
-      return res.status(500).json(err);
-    }
-  },
-
   history: async (req, res, next) => {
     const { walletId } = req.params;
     const sent = await Transaction.find({ sender_walletId: walletId });
