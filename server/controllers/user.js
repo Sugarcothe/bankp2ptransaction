@@ -29,7 +29,7 @@ module.exports = {
 
     //     //check if the user already exist
     const walletIdExist = await User.findOne({ walletId });
-    if (walletId)
+    if (walletIdExist)
       return res.status(400).json({
         message: `${walletIdExist.walletId} already assigned, select another walletId`,
       });
