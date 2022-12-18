@@ -29,13 +29,10 @@ module.exports = {
 
     //     //check if the user already exist
     const walletIdExist = await User.findOne({ walletId });
-    if (walletId)
-      return res
-        .status(400)
-        .json({
-          message:
-            `${walletIdExist.walletId} as Wallet Id already registered, select another walletId`,
-        });
+    if (walletIdExist)
+      return res.status(400).json({
+        message: `${walletIdExist.walletId} already assigned, select another walletId`,
+      });
 
     //salt and hash pin and password
     const salt = await bcrypt.genSalt(10);
@@ -53,8 +50,6 @@ module.exports = {
         password: hashedPassword,
       });
 
-      // try {
-      //send mail to the user containing walletId and pin for login
       const userDetails = { name, walletId, pin, email };
 
       res.status(201).json({
