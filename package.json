@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Peer2Peer financial service",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon server/app.js",
     "start": "node server/app.js"

@@ -1,9 +1,13 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const config = require("./config/index");
-const app = express();
+import express from 'express'
+import mongoose from 'mongoose';
+import authRoute from './routes/auth.js'
+import transactionRoute from "./routes/transaction.js";
+import dotenv from "dotenv"
 
-mongoose.connect(config.MONGOURI, (err) => {
+const app = express();
+dotenv.config()
+
+mongoose.connect(process.env.MONGOURI, (err) => {
   if (err) console.log("cannot connect to db");
   else {
     console.log("db connetion successfully established");
@@ -14,7 +18,7 @@ app.use(express.json());
 app.get("/", (req, res, next) => {
   res.status(200).send("Beginning of awesomness!");
 });
-app.use("/api/", require("./routes/auth"));
-app.use("/api/transactions/", require("./routes/transaction"));
+app.use("/api/", authRoute);
+app.use("/api/transactions/", transactionRoute);
 
-app.listen(config.PORT, () => console.log(`app started on ${config.PORT}`));
+app.listen(process.env.PORT, () => console.log(`app started on ${process.env.PORT}`));
