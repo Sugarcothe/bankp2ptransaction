@@ -1,6 +1,6 @@
-const Joi = require("@hapi/joi");
+import Joi from "@hapi/joi";
 
-const validateRegister = data => {
+export const validateRegister = data => {
   const schema = {
     name: Joi.string()
       .min(3)
@@ -32,7 +32,7 @@ const validateRegister = data => {
   return Joi.validate(data, schema);
 };
 
-const validateLogin = data => {
+export const validateLogin = data => {
   const schema = {
     walletId: Joi.string()
       .min(5)
@@ -47,7 +47,3 @@ const validateLogin = data => {
   return Joi.validate(data, schema);
 };
 
-module.exports = {
-  validateRegister,
-  validateLogin
-};

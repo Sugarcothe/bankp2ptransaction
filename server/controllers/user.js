@@ -1,12 +1,11 @@
-const User = require("../models/user");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const randomize = require("randomatic");
-const { validateRegister, validateLogin } = require("../middleware/validator");
-const config = require("../config/index");
+import User from "../models/user.js"
+import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
+import randomaize from "randomatic";
+import {validateRegister, validateLogin} from "../middleware/validator.js"
 
-module.exports = {
-  register: async (req, res, next) => {
+
+export const register = async (req, res, next) => {
     const { name, email, phoneNumber, password, pin, walletId } = req.body;
 
     //validate user request
@@ -61,11 +60,11 @@ module.exports = {
         .status(500)
         .json({ message: `Error while creating account: ${err}` });
     }
-  },
+  }
 
-  // login
 
-  login: async (req, res, next) => {
+  // LOGIN
+  export const login = async (req, res, next) => {
     const { walletId, password } = req.body;
 
     //validate user request
@@ -86,8 +85,8 @@ module.exports = {
 
     const token = jwt.sign(
       { id: user._id, name: user.name },
-      config.JWT_SECRET,
-      { expiresIn: config.TOKEN_EXPIRESIN }
+      process.env.JWT,
+      { expiresIn: process.env.TOKEN_EXPIRESIN }
     );
 
     res
@@ -97,5 +96,5 @@ module.exports = {
         message: "Successfully logged in",
         user: { id: user._id, name: user.name },
       });
-  },
-};
+  }
+

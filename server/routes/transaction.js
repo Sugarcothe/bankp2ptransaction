@@ -1,13 +1,19 @@
-const router = require("express").Router();
-const transactionController = require("../controllers/transaction");
-const auth = require("../middleware/verifyToken");
+import express from "express";
+import {
+  transferFund,
+  completeTransaction,
+  history,
+} from "../controllers/transaction.js";
+import { auth, verifyUser } from "../middleware/verifyToken.js";
 
-router.post("/transfer", auth, transactionController.transferFund);
+const router = express.Router();
+
+router.post("/transfer", verifyUser, transferFund);
 router.post(
   "/completeTransfer",
-  auth,
-  transactionController.completeTransaction
+  verifyUser,
+  completeTransaction
 );
-router.get("/:walletId", auth, transactionController.history);
+router.get("/:walletId", verifyUser, history);
 
-module.exports = router;
+export default router;
