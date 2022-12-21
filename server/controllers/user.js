@@ -84,13 +84,14 @@ export const register = async (req, res, next) => {
     //sign a JWT token
 
     const token = jwt.sign(
-      { id: user._id, name: user.name },
+      { id: user._id},
       process.env.JWT,
       { expiresIn: process.env.TOKEN_EXPIRESIN }
     );
-
     res
-      .header("auth-token", token)
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
       .status(200)
       .json({
         message: "Successfully logged in",
