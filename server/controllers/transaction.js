@@ -14,17 +14,14 @@ export const transferFund = async (req, res, next) => {
   //verify that the the ids exist
   const sender = await User.findOne({ walletId: senderId });
   const receiver = await User.findOne({ walletId: receiverId });
-  const senderPin = await User.findOne({ walletId: pinId });
-
-  if (pin !== senderPin)
-    return res.status(400).json({ message: "Invalid pin" });
 
   if (!sender || !receiver)
     return res.status(400).json({ message: "Invalid sender or receiver Id" });
 
+  const isMatch = await bcrypt.compare(pin, sender.pin)
   //ensure sender has enough balance to make this transaction
   let senderBalance = sender.balance;
-  if (senderBalance >= amount) {
+  if (isMatch && senderBalance >= amount) {
     //save the unfulfilled transaction to transaction table
     const transactionDetails = await Transaction.create({
       sender_walletId: senderId,
@@ -90,8 +87,10 @@ export const completeTransaction = async (req, res, next) => {
 export const history = async (req, res, next) => {
   const { walletId } = req.params;
   const sent = await Transaction.find({ sender_walletId: walletId });
-  const recieved = await Transaction.find({ receiver_walletId: walletId });
-  const data = [...sent, ...recieved];
+  const received = await Transaction.find({ receiver_walletId: walletId });
+  const data = [...sent, ...received];
 
-  res.status(200).json({ message: "Transaction history", data });
+  res
+    .status(200)
+    .json({ message: `Transfer history`, data});
 };
