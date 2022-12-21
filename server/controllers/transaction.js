@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs"
 import User from "../models/user.js";
 import Transaction from "../models/transaction.js";
 
-export const transferFund = async (req, res, next) => {
+export const transferFund = async (req, res) => {
   const senderId = req.body.sender_walletId;
   const receiverId = req.body.receiver_walletId;
   let amount = req.body.amount;
