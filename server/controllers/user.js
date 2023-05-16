@@ -1,7 +1,6 @@
 import User from "../models/user.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
-import randomaize from "randomatic";
 import {validateRegister, validateLogin} from "../middleware/validator.js"
 
 

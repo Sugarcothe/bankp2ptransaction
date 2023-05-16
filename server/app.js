@@ -1,12 +1,12 @@
-import express from 'express'
-import mongoose from 'mongoose';
-import authRoute from './routes/auth.js'
+import express from "express";
+import mongoose from "mongoose";
+import authRoute from "./routes/auth.js";
 import transactionRoute from "./routes/transaction.js";
-import dotenv from "dotenv"
-import cookieParser from 'cookie-parser';
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 const app = express();
-dotenv.config()
+dotenv.config();
 
 mongoose.connect(process.env.MONGOURI, (err) => {
   if (err) console.log("cannot connect to db");
@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGOURI, (err) => {
   }
 });
 
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.json());
 app.get("/", (req, res, next) => {
   res.status(200).send("Beginning of awesomness!");
@@ -23,4 +23,6 @@ app.get("/", (req, res, next) => {
 app.use("/api/", authRoute);
 app.use("/api/transactions", transactionRoute);
 
-app.listen(process.env.PORT, () => console.log(`app started on ${process.env.PORT}`));
+app.listen(process.env.PORT || 8000, () =>
+  console.log(`app started on ${process.env.PORT}`)
+);
