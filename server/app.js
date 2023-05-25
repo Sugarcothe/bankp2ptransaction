@@ -5,7 +5,7 @@ import transactionRoute from "./routes/transaction.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import corsOptions from "./config/corsOption.js";
+import { whitelist } from "./config/corsOption.js";
 
 const app = express();
 dotenv.config();
@@ -21,9 +21,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: { whitelist },
     methods: ["GET", "POST", "DELETE"],
-    credentials: true
+    credentials: true,
   })
 );
 app.get("/", (req, res, next) => {
