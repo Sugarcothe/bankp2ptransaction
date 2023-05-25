@@ -2,32 +2,31 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.js";
 import Transaction from "../models/transaction.js";
 
-// export const fundUserBalance = async (req, res) => {
-//   const walletId = req.body.walletId;
-//   const amount = req.body.amount;
+export const fundUserBalance = async (req, res) => {
+  const walletId = req.body.walletId;
+  const amount = req.body.amount;
 
-//   // Verify that the user ID exists
-//   const user = await User.findById({ walletId });
+  const user = await User.findOne({ walletId });
+  try {
+    user.balance += Number(amount);
+    await User.findByIdAndUpdate(
+      user._id,
+      { balance: user.balance },
+      { new: true }
+    );
 
-//   if (!user) return res.status(400).json({ message: "Invalid user walletID" });
+    // Save the updated user document
+    await user.save();
 
-//   // Add the amount to the user's balance
-//   user.balance += Number(amount);
-//   await User.findByIdAndUpdate({ balance: user.balance }, { new: true });
-
-//   // Save the updated user document
-//   await user.save();
-
-//   await Transaction.create({
-//     amount,
-//     message,
-//   });
-
-//   res.status(200).json({
-//     message: "User balance funded successfully",
-//     balance: user.balance,
-//   });
-// };
+    res.status(200).json({
+      message: `🟢 Your transaction of ${amount} was successful!`,
+    });
+  } catch (err) {
+    res.status(400).json({
+      message: `🔴 Your transaction of ${amount} was declined!`,
+    });
+  }
+};
 
 export const transferFund = async (req, res) => {
   const senderId = req.body.sender_walletId;
@@ -76,17 +75,25 @@ export const transferFund = async (req, res) => {
       sender_walletId: senderId,
       receiver_walletId: receiverId,
       amount,
+      message: `🟢 Successful`,
     });
 
-    res.status(200).json({
-      message: `${amount} to ${receiver.walletId} succesful!`,
-    });
+    try {
+      res.status(200).json({
+        message: `🟢 Successful`,
+      });
+    } catch (err) {
+      res.status(200).json({
+        message: `🔴 Declined`,
+      });
+    }
   } else {
     res.status(400).json({
-      message: "You don't have enough funds to complete this transaction",
+      message: "🔴 You don't have enough funds to complete this transaction ",
     });
   }
 };
+
 
 export const history = async (req, res, next) => {
   const { walletId } = req.params;
