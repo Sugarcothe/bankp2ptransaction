@@ -90,7 +90,7 @@ export const login = async (req, res, next) => {
     .status(200)
     .json({
       message: "Successfully logged in",
-      user: { id: user._id, name: user.name },
+      user,
     });
 };
 
